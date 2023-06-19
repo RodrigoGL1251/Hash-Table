@@ -21,23 +21,36 @@ public class Program : MonoBehaviour
     public TMP_Text m_emailText;
     public TMP_Text m_idText;
 
-
+    [Header("Load")]
+    public GameObject panelMesage;
+    public TMP_Text textMesage;
     public void SaveData()
     {
         if(m_email.text == "" || m_email.text == "" || m_password.text == "")
         {
-            Debug.Log("Tienes que llenar todos los campos");
+            panelMesage.SetActive(true);
+            textMesage.text = "Tienes que llenar todos los campos";
             return;
         }
 
         UserData newUser = new UserData(m_email.text, m_id.text, m_password.text);
+
+        if((UserData)m_usersTable[m_email.text] != null)
+        {
+            panelMesage.SetActive(true);
+            textMesage.text ="El usuario ya existe";
+            return;
+        }
+
+
         m_usersTable.Add(m_email.text, newUser);
 
         m_email.text = "";
         m_id.text = "";
         m_password.text = "";
 
-        Debug.Log("save user");
+        panelMesage.SetActive(true);
+        textMesage.text = "Usuario creado con éxito";
     }
 
     public void Load()
@@ -46,7 +59,8 @@ public class Program : MonoBehaviour
 
         if(temp == null)
         {
-            Debug.Log("invalid email");
+            panelMesage.SetActive(true);
+            textMesage.text = "Invalid email";
             m_emailText.text = "--";
             m_idText.text = "--";
             return;
@@ -54,7 +68,8 @@ public class Program : MonoBehaviour
 
         if(temp.Password != m_logPassword.text)
         {
-            Debug.Log("invalid password");
+            panelMesage.SetActive(true);
+            textMesage.text = "Invalid password";
             m_emailText.text = "--";
             m_idText.text = "--";
             return;
